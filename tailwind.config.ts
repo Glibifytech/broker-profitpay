@@ -47,6 +47,27 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Investment Dashboard Colors
+        withdraw: {
+          primary: "hsl(var(--withdraw-primary))",
+          secondary: "hsl(var(--withdraw-secondary))",
+        },
+        deposit: {
+          primary: "hsl(var(--deposit-primary))",
+          secondary: "hsl(var(--deposit-secondary))",
+        },
+        invest: {
+          primary: "hsl(var(--invest-primary))",
+          secondary: "hsl(var(--invest-secondary))",
+        },
+        current: {
+          primary: "hsl(var(--current-primary))",
+          secondary: "hsl(var(--current-secondary))",
+        },
+        balance: {
+          primary: "hsl(var(--balance-primary))",
+          secondary: "hsl(var(--balance-secondary))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,6 +78,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        'gradient-withdraw': 'var(--gradient-withdraw)',
+        'gradient-deposit': 'var(--gradient-deposit)',
+        'gradient-invest': 'var(--gradient-invest)',
+        'gradient-current': 'var(--gradient-current)',
+        'gradient-balance': 'var(--gradient-balance)',
+      },
+      boxShadow: {
+        'card': 'var(--shadow-card)',
+        'elevated': 'var(--shadow-elevated)',
       },
       borderRadius: {
         lg: "var(--radius)",

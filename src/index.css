@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 240 10% 95%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -36,7 +36,44 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Investment Dashboard Colors */
+    --withdraw-primary: 210 85% 55%;
+    --withdraw-secondary: 210 85% 65%;
+    
+    --deposit-primary: 145 70% 45%;
+    --deposit-secondary: 145 70% 55%;
+    
+    --invest-primary: 345 75% 55%;
+    --invest-secondary: 345 75% 65%;
+    
+    --current-primary: 25 90% 55%;
+    --current-secondary: 25 90% 65%;
+    
+    --balance-primary: 220 85% 50%;
+    --balance-secondary: 220 85% 70%;
+
+    /* Gradient Definitions */
+    --gradient-withdraw: linear-gradient(135deg, hsl(var(--withdraw-primary)), hsl(var(--withdraw-secondary)));
+    --gradient-deposit: linear-gradient(135deg, hsl(var(--deposit-primary)), hsl(var(--deposit-secondary)));
+    --gradient-invest: linear-gradient(135deg, hsl(var(--invest-primary)), hsl(var(--invest-secondary)));
+    --gradient-current: linear-gradient(135deg, hsl(var(--current-primary)), hsl(var(--current-secondary)));
+    --gradient-balance: linear-gradient(135deg, hsl(var(--balance-primary)), hsl(var(--balance-secondary)));
+
+    /* Option Button Colors */
+    --option-orange: 25 90% 60%;
+    --option-cyan: 185 85% 55%;
+    --option-blue: 220 85% 60%;
+    --option-green: 145 70% 50%;
+    --option-coral: 15 80% 65%;
+    --option-sky: 195 85% 60%;
+    --option-indigo: 235 75% 65%;
+
+    /* Shadows and Effects */
+    --shadow-card: 0 4px 20px -2px hsl(var(--primary) / 0.1);
+    --shadow-elevated: 0 8px 30px -6px hsl(var(--primary) / 0.15);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,13 +93,13 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 220 25% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 220 25% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 220 25% 12%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 210 40% 98%;
