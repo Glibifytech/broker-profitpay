@@ -22,15 +22,15 @@ import { generateMockStats, generateMockTransactions, generateMockPortfolio } fr
 
 interface DashboardProps {
   onLogout: () => void;
-  user: { username: string };
+  user: { email?: string; id: string };
 }
 
 const Dashboard = ({ onLogout, user }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('home');
 
   // Generate mock data based on username
-  const mockStats = generateMockStats(user.username);
-  const mockTransactions = generateMockTransactions(user.username);
+  const mockStats = generateMockStats(user.email || 'user');
+  const mockTransactions = generateMockTransactions(user.email || 'user');
   const mockPortfolio = generateMockPortfolio();
 
   const stats = [
@@ -84,7 +84,7 @@ const Dashboard = ({ onLogout, user }: DashboardProps) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold">ProfitPay Investment</h1>
-            <p className="text-sm text-white/80">Welcome back, {user.username}!</p>
+            <p className="text-sm text-white/80">Welcome back, {user.email?.split('@')[0] || 'User'}!</p>
           </div>
           <div className="flex items-center space-x-3">
             <Button 
