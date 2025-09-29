@@ -1,23 +1,38 @@
 import { useState } from 'react';
+import Landing from '@/pages/Landing';
 import LoginForm from '@/components/LoginForm';
 import Dashboard from '@/pages/Dashboard';
 
+type AppState = 'landing' | 'login' | 'dashboard';
+
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState<AppState>('landing');
   const [user, setUser] = useState<{ username: string } | null>(null);
+
+  const handleGetStarted = () => {
+    setCurrentPage('login');
+  };
+
+  const handleGoToLogin = () => {
+    setCurrentPage('login');
+  };
 
   const handleLogin = (username: string, password: string) => {
     // Mock authentication - any credentials work
     setUser({ username });
-    setIsLoggedIn(true);
+    setCurrentPage('dashboard');
   };
 
   const handleLogout = () => {
     setUser(null);
-    setIsLoggedIn(false);
+    setCurrentPage('landing');
   };
 
-  if (!isLoggedIn) {
+  if (currentPage === 'landing') {
+    return <Landing onGetStarted={handleGetStarted} onLogin={handleGoToLogin} />;
+  }
+
+  if (currentPage === 'login') {
     return <LoginForm onLogin={handleLogin} />;
   }
 

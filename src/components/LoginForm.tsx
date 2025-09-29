@@ -83,8 +83,29 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Demo credentials: Any username/password will work</p>
+          <div className="mt-6 space-y-3">
+            <div className="text-center text-sm text-muted-foreground">
+              <p className="font-semibold">🔑 Mock Login Credentials</p>
+            </div>
+            <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-medium">Demo User 1:</p>
+                  <p className="text-muted-foreground">Username: demo</p>
+                  <p className="text-muted-foreground">Password: demo123</p>
+                </div>
+                <div>
+                  <p className="font-medium">Demo User 2:</p>
+                  <p className="text-muted-foreground">Username: trader</p>
+                  <p className="text-muted-foreground">Password: pass123</p>
+                </div>
+              </div>
+              <div className="text-center pt-2 border-t">
+                <p className="text-xs text-muted-foreground">
+                  ⚡ Any username/password combination works for demo purposes
+                </p>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

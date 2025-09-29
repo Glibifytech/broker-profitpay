@@ -9,12 +9,16 @@ import {
   ArrowRightLeft,
   DollarSign,
   BarChart3,
-  LogOut
+  LogOut,
+  Bell,
+  Settings
 } from 'lucide-react';
 import StatsCard from '@/components/StatsCard';
 import OptionButton from '@/components/OptionButton';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { generateMockStats, generateMockTransactions, generateMockPortfolio } from '@/components/MockDataGenerator';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -24,35 +28,40 @@ interface DashboardProps {
 const Dashboard = ({ onLogout, user }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('home');
 
+  // Generate mock data based on username
+  const mockStats = generateMockStats(user.username);
+  const mockTransactions = generateMockTransactions(user.username);
+  const mockPortfolio = generateMockPortfolio();
+
   const stats = [
     {
       title: 'Account balance',
-      amount: '0.00 $',
+      amount: `$${mockStats.balance}`,
       icon: DollarSign,
       variant: 'balance' as const,
       className: 'col-span-2'
     },
     {
       title: 'Total withdraw',
-      amount: '0.00 $',
+      amount: `$${mockStats.totalWithdraw}`,
       icon: Wallet,
       variant: 'withdraw' as const
     },
     {
       title: 'Total deposit', 
-      amount: '0.00 $',
+      amount: `$${mockStats.totalDeposit}`,
       icon: Timer,
       variant: 'deposit' as const
     },
     {
       title: 'Total invest',
-      amount: '0.00 $',
+      amount: `$${mockStats.totalInvest}`,
       icon: TrendingUp,
       variant: 'invest' as const
     },
     {
       title: 'Current invest',
-      amount: '0 $',
+      amount: `$${mockStats.currentInvest}`,
       icon: FolderOpen,
       variant: 'current' as const
     }
@@ -75,9 +84,23 @@ const Dashboard = ({ onLogout, user }: DashboardProps) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold">ProfitPay Investment</h1>
+            <p className="text-sm text-white/80">Welcome back, {user.username}!</p>
           </div>
           <div className="flex items-center space-x-3">
-            <span className="text-sm font-medium">{user.username}</span>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-white hover:bg-white/20 h-8 w-8 p-0"
+            >
+              <Bell className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-white hover:bg-white/20 h-8 w-8 p-0"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -91,6 +114,24 @@ const Dashboard = ({ onLogout, user }: DashboardProps) => {
       </div>
 
       <div className="p-6 space-y-6">
+        {/* Portfolio Performance */}
+        <Card className="shadow-card">
+          <CardHeader>
+            <CardTitle className="text-lg">Portfolio Performance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">{mockPortfolio.totalReturn}</p>
+                <p className="text-sm text-muted-foreground">Total Return</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">{mockPortfolio.monthlyReturn}</p>
+                <p className="text-sm text-muted-foreground">This Month</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
           {stats.map((stat, index) => (
@@ -121,15 +162,42 @@ const Dashboard = ({ onLogout, user }: DashboardProps) => {
           </div>
         </div>
 
-        {/* Referral Section */}
-        <div className="bg-card rounded-2xl p-6 shadow-card">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Your Referral Link</h3>
-          <div className="bg-muted p-4 rounded-lg">
-            <p className="text-sm text-muted-foreground font-mono break-all">
-              https://profitpayinvestment.com/ref/{user.username}
-            </p>
-          </div>
-        </div>
+        {/* Recent Transactions */}
+        <Card className="shadow-card">
+          <CardHeader>
+            <CardTitle className="text-lg">Recent Transactions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {mockTransactions.slice(0, 3).map((transaction, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      transaction.type === 'deposit' ? 'bg-green-100 text-green-600' :
+                      transaction.type === 'withdraw' ? 'bg-blue-100 text-blue-600' :
+                      'bg-red-100 text-red-600'
+                    }`}>
+                      {transaction.type === 'deposit' ? '↓' : 
+                       transaction.type === 'withdraw' ? '↑' : '→'}
+                    </div>
+                    <div>
+                      <p className="font-medium capitalize">{transaction.type}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">${transaction.amount.toLocaleString()}</p>
+                    <p className={`text-sm ${
+                      transaction.status === 'completed' ? 'text-green-600' : 'text-orange-600'
+                    }`}>
+                      {transaction.status}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Bottom Navigation */}
