@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface AuthPageProps {
   onBack: () => void;
-  onAuthSuccess: () => void;
+  onAuthSuccess: (email: string, needsVerification: boolean) => void;
 }
 
 const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
@@ -48,7 +48,7 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
           title: "Welcome back!",
           description: "Successfully logged in to your account.",
         });
-        onAuthSuccess();
+        onAuthSuccess(loginEmail, false);
       }
     } catch (error) {
       toast({
@@ -101,10 +101,10 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
         });
       } else {
         toast({
-          title: "Account Created!",
-          description: "Please check your email to verify your account.",
+          title: "Verification Code Sent!",
+          description: "Please check your email for the 6-digit code.",
         });
-        // Note: User might need to verify email before being able to log in
+        onAuthSuccess(signupEmail, true);
       }
     } catch (error) {
       toast({
