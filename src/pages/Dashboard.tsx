@@ -26,9 +26,10 @@ import { generateMockStats, generateMockTransactions, generateMockPortfolio } fr
 interface DashboardProps {
   onLogout: () => void;
   user: { email?: string; id: string };
+  onNavigateAdmin?: () => void;
 }
 
-const Dashboard = ({ onLogout, user }: DashboardProps) => {
+const Dashboard = ({ onLogout, user, onNavigateAdmin }: DashboardProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('home');
   const [balance, setBalance] = useState<number>(0);
@@ -122,11 +123,11 @@ const Dashboard = ({ onLogout, user }: DashboardProps) => {
             <p className="text-sm text-white/80">Welcome back, {user.email?.split('@')[0] || 'User'}!</p>
           </div>
           <div className="flex items-center space-x-3">
-            {isAdmin && (
+            {isAdmin && onNavigateAdmin && (
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigate('/admin')}
+                onClick={onNavigateAdmin}
                 className="text-white hover:bg-white/20 h-8 w-8 p-0"
                 title="Admin Panel"
               >

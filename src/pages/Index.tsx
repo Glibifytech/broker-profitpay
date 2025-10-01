@@ -3,9 +3,10 @@ import Landing from '@/pages/Landing';
 import AuthPage from '@/components/AuthPage';
 import OTPVerification from '@/components/OTPVerification';
 import Dashboard from '@/pages/Dashboard';
+import Admin from '@/pages/Admin';
 import { useAuth } from '@/hooks/useAuth';
 
-type AppState = 'landing' | 'auth' | 'otp' | 'dashboard';
+type AppState = 'landing' | 'auth' | 'otp' | 'dashboard' | 'admin';
 
 const Index = () => {
   const { user, loading, signOut } = useAuth();
@@ -76,7 +77,11 @@ const Index = () => {
     return <OTPVerification email={pendingEmail} onBack={handleBackFromOTP} onVerified={handleOTPVerified} />;
   }
 
-  return <Dashboard onLogout={handleLogout} user={user!} />;
+  if (currentPage === 'admin') {
+    return <Admin onLogout={handleLogout} onBack={() => setCurrentPage('dashboard')} />;
+  }
+
+  return <Dashboard onLogout={handleLogout} user={user!} onNavigateAdmin={() => setCurrentPage('admin')} />;
 };
 
 export default Index;
