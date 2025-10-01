@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Wallet, 
   Timer, 
@@ -11,8 +12,10 @@ import {
   BarChart3,
   LogOut,
   Bell,
-  Settings
+  Settings,
+  Shield
 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import StatsCard from '@/components/StatsCard';
 import OptionButton from '@/components/OptionButton';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -26,17 +29,49 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ onLogout, user }: DashboardProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('home');
+  const [balance, setBalance] = useState<number>(0);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Generate mock data based on username
   const mockStats = generateMockStats(user.email || 'user');
   const mockTransactions = generateMockTransactions(user.email || 'user');
   const mockPortfolio = generateMockPortfolio();
 
+  useEffect(() => {
+    loadUserData();
+  }, [user.id]);
+
+  const loadUserData = async () => {
+    // Load profile balance
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('balance')
+      .eq('id', user.id)
+      .single();
+
+    if (profile) {
+      setBalance(profile.balance);
+    }
+
+    // Check if user is admin
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    setIsAdmin(!!roles);
+    setLoading(false);
+  };
+
   const stats = [
     {
       title: 'Account balance',
-      amount: `$${mockStats.balance}`,
+      amount: `$${balance.toFixed(2)}`,
       icon: DollarSign,
       variant: 'balance' as const,
       className: 'col-span-2'
@@ -87,6 +122,17 @@ const Dashboard = ({ onLogout, user }: DashboardProps) => {
             <p className="text-sm text-white/80">Welcome back, {user.email?.split('@')[0] || 'User'}!</p>
           </div>
           <div className="flex items-center space-x-3">
+            {isAdmin && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate('/admin')}
+                className="text-white hover:bg-white/20 h-8 w-8 p-0"
+                title="Admin Panel"
+              >
+                <Shield className="h-4 w-4" />
+              </Button>
+            )}
             <Button 
               variant="ghost" 
               size="sm" 
