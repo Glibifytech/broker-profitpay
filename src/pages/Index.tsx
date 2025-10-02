@@ -6,7 +6,7 @@ import Dashboard from '@/pages/Dashboard';
 import Admin from '@/pages/Admin';
 import { useAuth } from '@/hooks/useAuth';
 
-type AppState = 'landing' | 'auth' | 'otp' | 'dashboard' | 'admin';
+type AppState = 'landing' | 'auth' | 'admin-auth' | 'otp' | 'dashboard' | 'admin';
 
 const Index = () => {
   const { user, loading, signOut } = useAuth();
@@ -26,14 +26,20 @@ const Index = () => {
     setCurrentPage('auth');
   };
 
+  const handleGoToAdminAuth = () => {
+    setCurrentPage('admin-auth');
+  };
+
   const handleBackToLanding = () => {
     setCurrentPage('landing');
   };
 
-  const handleAuthSuccess = (email: string, needsVerification: boolean) => {
+  const handleAuthSuccess = (email: string, needsVerification: boolean, isAdminLogin = false) => {
     if (needsVerification) {
       setPendingEmail(email);
       setCurrentPage('otp');
+    } else if (isAdminLogin) {
+      setCurrentPage('admin');
     } else {
       setCurrentPage('dashboard');
     }
@@ -66,11 +72,19 @@ const Index = () => {
   }
 
   if (currentPage === 'landing') {
-    return <Landing onGetStarted={handleGetStarted} onLogin={handleGoToAuth} />;
+    return <Landing onGetStarted={handleGetStarted} onLogin={handleGoToAuth} onAdminLogin={handleGoToAdminAuth} />;
   }
 
   if (currentPage === 'auth') {
     return <AuthPage onBack={handleBackToLanding} onAuthSuccess={handleAuthSuccess} />;
+  }
+
+  if (currentPage === 'admin-auth') {
+    return <AuthPage 
+      onBack={handleBackToLanding} 
+      onAuthSuccess={(email, needsVerification) => handleAuthSuccess(email, needsVerification, true)}
+      isAdminLogin={true}
+    />;
   }
 
   if (currentPage === 'otp') {

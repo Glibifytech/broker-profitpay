@@ -8,12 +8,15 @@ import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+import { Shield } from 'lucide-react';
+
 interface AuthPageProps {
   onBack: () => void;
   onAuthSuccess: (email: string, needsVerification: boolean) => void;
+  isAdminLogin?: boolean;
 }
 
-const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
+const AuthPage = ({ onBack, onAuthSuccess, isAdminLogin = false }: AuthPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
@@ -131,23 +134,31 @@ const AuthPage = ({ onBack, onAuthSuccess }: AuthPageProps) => {
             Back to Home
           </Button>
           <div className="text-center">
-            <div className="mx-auto w-20 h-20 bg-gradient-balance rounded-2xl flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">PI</span>
+            <div className={`mx-auto w-20 h-20 ${isAdminLogin ? 'bg-destructive' : 'bg-gradient-balance'} rounded-2xl flex items-center justify-center`}>
+              {isAdminLogin ? (
+                <Shield className="h-10 w-10 text-white" />
+              ) : (
+                <span className="text-2xl font-bold text-white">PI</span>
+              )}
             </div>
             <div className="mt-4">
-              <CardTitle className="text-2xl font-bold">ProfitPay Investment</CardTitle>
+              <CardTitle className="text-2xl font-bold">
+                {isAdminLogin ? 'Admin Panel' : 'ProfitPay Investment'}
+              </CardTitle>
               <CardDescription className="text-base mt-2">
-                Create an account or sign in to get started
+                {isAdminLogin ? 'Sign in with admin credentials' : 'Create an account or sign in to get started'}
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
+            {!isAdminLogin && (
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+            )}
 
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">

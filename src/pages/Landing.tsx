@@ -16,9 +16,10 @@ import {
 interface LandingProps {
   onGetStarted: () => void;
   onLogin: () => void;
+  onAdminLogin: () => void;
 }
 
-const Landing = ({ onGetStarted, onLogin }: LandingProps) => {
+const Landing = ({ onGetStarted, onLogin, onAdminLogin }: LandingProps) => {
   const [activeFeature, setActiveFeature] = useState(0);
 
   const features = [
@@ -85,6 +86,14 @@ const Landing = ({ onGetStarted, onLogin }: LandingProps) => {
               <h1 className="text-xl font-bold">ProfitPay Investment</h1>
             </div>
             <div className="flex items-center space-x-3">
+              <Button 
+                variant="ghost" 
+                onClick={onAdminLogin}
+                className="text-white hover:bg-white/20"
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Admin
+              </Button>
               <Button 
                 variant="ghost" 
                 onClick={onLogin}
