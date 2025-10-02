@@ -103,15 +103,24 @@ const Dashboard = ({ onLogout, user, onNavigateAdmin }: DashboardProps) => {
     }
   ];
 
-  const options = [
-    { title: 'Invest log', icon: FileText, color: 'hsl(25, 90%, 60%)' },
-    { title: 'Deposit log', icon: FileText, color: 'hsl(185, 85%, 55%)' },
-    { title: 'Withdraw log', icon: FileText, color: 'hsl(220, 85%, 60%)' },
-    { title: 'Interest log', icon: FileText, color: 'hsl(145, 70%, 50%)' },
-    { title: 'Money transfer log', icon: ArrowRightLeft, color: 'hsl(15, 80%, 65%)' },
-    { title: 'Transaction log', icon: BarChart3, color: 'hsl(195, 85%, 60%)' },
-    { title: 'Referral log', icon: Users, color: 'hsl(235, 75%, 65%)' }
+  const baseOptions = [
+    { title: 'Invest log', icon: FileText, color: 'hsl(25, 90%, 60%)', onClick: undefined },
+    { title: 'Deposit log', icon: FileText, color: 'hsl(185, 85%, 55%)', onClick: undefined },
+    { title: 'Withdraw log', icon: FileText, color: 'hsl(220, 85%, 60%)', onClick: undefined },
+    { title: 'Interest log', icon: FileText, color: 'hsl(145, 70%, 50%)', onClick: undefined },
+    { title: 'Money transfer log', icon: ArrowRightLeft, color: 'hsl(15, 80%, 65%)', onClick: undefined },
+    { title: 'Transaction log', icon: BarChart3, color: 'hsl(195, 85%, 60%)', onClick: undefined },
+    { title: 'Referral log', icon: Users, color: 'hsl(235, 75%, 65%)', onClick: undefined }
   ];
+
+  const adminOption = { 
+    title: 'Admin Panel', 
+    icon: Shield, 
+    color: 'hsl(0, 80%, 60%)',
+    onClick: onNavigateAdmin 
+  };
+
+  const options = isAdmin ? [adminOption, ...baseOptions] : baseOptions;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -203,7 +212,7 @@ const Dashboard = ({ onLogout, user, onNavigateAdmin }: DashboardProps) => {
                 title={option.title}
                 icon={option.icon}
                 color={option.color}
-                onClick={() => console.log(`Clicked ${option.title}`)}
+                onClick={option.onClick || (() => console.log(`Clicked ${option.title}`))}
               />
             ))}
           </div>
