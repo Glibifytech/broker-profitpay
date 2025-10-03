@@ -1,73 +1,150 @@
-# Welcome to your Lovable project
+# ProfitPay Investment Platform
 
-## Project info
+A modern investment platform built with React, TypeScript, and Supabase. Features user dashboard, admin panel, and cryptocurrency deposit system.
 
-**URL**: https://lovable.dev/projects/6cf7e4c9-9cea-42da-abbc-e6e0dc414668
+## 🚀 Features
 
-## How can I edit this code?
+### User Features
+- **User Dashboard** - View account balance and portfolio
+- **Deposit System** - Cryptocurrency deposits with Solana support
+- **Real-time Balance Updates** - Live balance tracking
+- **Responsive Design** - Mobile-friendly interface
 
-There are several ways of editing your application.
+### Admin Features
+- **Admin Panel** - Secure admin access via hidden URL
+- **User Management** - View and manage all users
+- **Balance Management** - Credit/debit user balances
+- **Deposit Processing** - Approve/reject user deposits
+- **Real-time Updates** - Live admin dashboard
 
-**Use Lovable**
+## 🛠️ Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6cf7e4c9-9cea-42da-abbc-e6e0dc414668) and start prompting.
+- **Frontend**: React 18, TypeScript, Vite
+- **UI Components**: Shadcn/ui, Tailwind CSS
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **State Management**: React Query
+- **Routing**: React Router DOM
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🏃‍♂️ Quick Start
 
-**Use your preferred IDE**
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Supabase account
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Glibifytech/broker-profitpay.git
+   cd broker-profitpay
+   ```
 
-Follow these steps:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. **Environment Setup**
+   
+   Copy `example.env` to `.env` and update with your Supabase credentials:
+   ```env
+   VITE_SUPABASE_PROJECT_ID="your_project_id"
+   VITE_SUPABASE_PUBLISHABLE_KEY="your_publishable_key"
+   VITE_SUPABASE_URL="your_supabase_url"
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+4. **Database Setup**
+   
+   Run the SQL commands in Supabase SQL Editor:
+   ```sql
+   -- Run the migrations in supabase/migrations/ folder
+   -- Also run create_deposits_table.sql for deposit functionality
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+5. **Start Development Server**
+   ```bash
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 🔧 Available Scripts
 
-**Edit a file directly in GitHub**
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🌐 Deployment
 
-**Use GitHub Codespaces**
+### Render Deployment (Recommended)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Choose "New Static Site"** on Render
+2. **Connect GitHub repository**
+3. **Build Settings**:
+   - Build Command: `npm run build`
+   - Publish Directory: `dist`
+4. **Environment Variables**: Add your Supabase credentials
+5. **Deploy**
 
-## What technologies are used for this project?
+## 🔐 Admin Access
 
-This project is built with:
+### Development
+- URL: `http://localhost:5173/admin`
+- Create admin user via: `http://localhost:5173/admin-setup`
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Production
+- URL: `https://yourdomain.com/secure-admin-panel-2024`
+- Use SQL to create admin users in `admins` table
 
-## How can I deploy this project?
+## 📱 User Flow
 
-Simply open [Lovable](https://lovable.dev/projects/6cf7e4c9-9cea-42da-abbc-e6e0dc414668) and click on Share -> Publish.
+### Deposit Process
+1. **User clicks "Deposit"** → Payment method selection
+2. **Select Cryptocurrency** → Choose Solana
+3. **Enter amount** → Get wallet address: `4VMixhmNThQDU9gSNRwFishcFPFsHDYLBWjsaRo5yPpx`
+4. **Submit payment** → Shows "Processing" status
+5. **Admin approval** → Balance automatically updated
 
-## Can I connect a custom domain to my Lovable project?
+### Admin Process
+1. **Login to admin panel**
+2. **View pending deposits** in Deposits section
+3. **Approve/Reject** deposits
+4. **Manage user balances** directly
 
-Yes, you can!
+## 🗃️ Database Schema
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Main Tables
+- `profiles` - User accounts and balances
+- `admins` - Admin login credentials
+- `deposits` - Deposit transactions
+- `user_roles` - User role management
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🔒 Security Features
+
+- **Row Level Security (RLS)** on all tables
+- **Admin-only routes** with hidden URLs
+- **Secure admin authentication**
+- **Environment variable protection**
+
+## 🎨 UI Components
+
+Built with Shadcn/ui components:
+- Cards, Tables, Buttons
+- Forms, Inputs, Dialogs
+- Navigation, Sidebars
+- Toasts, Badges, Loading states
+
+## 📞 Support
+
+For support and questions:
+- Email: richygabriel001@gmail.com
+- GitHub: [@Glibifytech](https://github.com/Glibifytech)
+
+## 📄 License
+
+This project is private and proprietary.
+
+---
+
+**ProfitPay Investment Platform** - Built with ❤️ by Glibifytech

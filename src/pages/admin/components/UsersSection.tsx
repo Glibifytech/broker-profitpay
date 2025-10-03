@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MoreHorizontal, DollarSign } from 'lucide-react';
+import { MoreHorizontal, DollarSign, User, Settings } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +23,10 @@ interface Profile {
 interface UsersSectionProps {
   profiles: Profile[];
   onTopUp: (userId: string, amount: string) => void;
+  onUserClick: (userId: string) => void;
 }
 
-export function UsersSection({ profiles, onTopUp }: UsersSectionProps) {
+export function UsersSection({ profiles, onTopUp, onUserClick }: UsersSectionProps) {
   const [topUpUserId, setTopUpUserId] = useState<string>('');
   const [topUpAmount, setTopUpAmount] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -98,13 +99,19 @@ export function UsersSection({ profiles, onTopUp }: UsersSectionProps) {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
+                              onClick={() => onUserClick(profile.id)}
+                            >
+                              <User className="mr-2 h-4 w-4" />
+                              Manage User
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
                               onClick={() => {
                                 setTopUpUserId(profile.id);
                                 setTopUpAmount('');
                               }}
                             >
                               <DollarSign className="mr-2 h-4 w-4" />
-                              Adjust Balance
+                              Quick Balance Adjust
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

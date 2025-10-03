@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { adminSupabase } from '@/integrations/supabase/adminClient';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { LogOut, Menu } from 'lucide-react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { DashboardSection } from '@/components/admin/DashboardSection';
-import { UsersSection } from '@/components/admin/UsersSection';
+import { AdminSidebar } from './components/AdminSidebar';
+import { DashboardSection } from './components/DashboardSection';
+import { UsersSection } from './components/UsersSection';
+import { DepositsSection } from './components/DepositsSection';
+import UserManagement from './UserManagement';
 
 interface Profile {
   id: string;
@@ -20,40 +23,65 @@ interface AdminProps {
   onBack: () => void;
 }
 
-export default function Admin({ onLogout }: AdminProps) {
+export default function AdminDashboard({ onLogout }: AdminProps) {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSection, setCurrentSection] = useState('dashboard');
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     loadProfiles();
     
-    const channel = supabase
+    const channel = adminSupabase
       .channel('profiles-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        console.log('Profile change detected, reloading...');
         loadProfiles();
       })
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      adminSupabase.removeChannel(channel);
     };
   }, []);
 
   const loadProfiles = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Loading profiles with admin client...');
+      console.log('Service role key available:', !!import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY);
+      
+      const { data, error } = await adminSupabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      console.log('Profiles data:', data);
+      console.log('Profiles error:', error);
+
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+      
       setProfiles(data || []);
+      
+      if (data && data.length > 0) {
+        toast({
+          title: 'Success',
+          description: `Loaded ${data.length} users from database`,
+        });
+      } else {
+        toast({
+          title: 'No Users Found',
+          description: 'No users found in the database. Users will appear here when they register.',
+        });
+      }
     } catch (error: any) {
+      console.error('Failed to load profiles:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to load users',
+        title: 'Database Error',
+        description: `${error.message || 'Failed to load users'}. Check console for details.`,
         variant: 'destructive',
       });
     } finally {
@@ -78,7 +106,9 @@ export default function Admin({ onLogout }: AdminProps) {
 
       const newBalance = Number(profile.balance) + numAmount;
 
-      const { error } = await supabase
+      console.log(`Updating balance for user ${userId}: ${profile.balance} + ${numAmount} = ${newBalance}`);
+      
+      const { error } = await adminSupabase
         .from('profiles')
         .update({ balance: newBalance })
         .eq('id', userId);
@@ -100,24 +130,34 @@ export default function Admin({ onLogout }: AdminProps) {
     }
   };
 
+  const handleUserClick = (userId: string) => {
+    setSelectedUserId(userId);
+  };
+
+  const handleBackToUsers = () => {
+    setSelectedUserId(null);
+  };
+
   const totalBalance = profiles.reduce((sum, p) => sum + Number(p.balance), 0);
 
   const renderSection = () => {
+    // If a user is selected, show the user management page
+    if (selectedUserId) {
+      return (
+        <UserManagement 
+          userId={selectedUserId} 
+          onBack={handleBackToUsers} 
+        />
+      );
+    }
+
     switch (currentSection) {
       case 'dashboard':
         return <DashboardSection totalUsers={profiles.length} totalBalance={totalBalance} />;
       case 'users':
-        return <UsersSection profiles={profiles} onTopUp={handleTopUp} />;
+        return <UsersSection profiles={profiles} onTopUp={handleTopUp} onUserClick={handleUserClick} />;
       case 'deposits':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold">Manage Deposits</h1>
-            <p className="text-muted-foreground mt-2">View and manage user deposits</p>
-            <div className="mt-6 p-8 border-2 border-dashed rounded-lg text-center text-muted-foreground">
-              Deposit management coming soon
-            </div>
-          </div>
-        );
+        return <DepositsSection />;
       case 'withdrawal':
         return (
           <div>

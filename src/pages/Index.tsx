@@ -3,53 +3,21 @@ import Landing from '@/pages/Landing';
 import AuthPage from '@/components/AuthPage';
 import OTPVerification from '@/components/OTPVerification';
 import Dashboard from '@/pages/Dashboard';
-import Admin from '@/pages/Admin';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 
-type AppState = 'landing' | 'auth' | 'admin-auth' | 'otp' | 'dashboard' | 'admin';
+type AppState = 'landing' | 'auth' | 'otp' | 'dashboard';
 
 const Index = () => {
   const { user, loading, signOut } = useAuth();
   const [currentPage, setCurrentPage] = useState<AppState>('landing');
   const [pendingEmail, setPendingEmail] = useState<string>('');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checkingRole, setCheckingRole] = useState(false);
 
-  // Check if user has admin role
+  // If we have a user, show dashboard
   useEffect(() => {
-    const checkAdminRole = async () => {
-      if (!user) {
-        setIsAdmin(false);
-        return;
-      }
-
-      setCheckingRole(true);
-      try {
-        const { data, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .eq('role', 'admin')
-          .single();
-
-        setIsAdmin(!!data && !error);
-      } catch (error) {
-        setIsAdmin(false);
-      } finally {
-        setCheckingRole(false);
-      }
-    };
-
-    checkAdminRole();
-  }, [user]);
-
-  // If we have a user, show appropriate page
-  useEffect(() => {
-    if (user && !checkingRole && currentPage !== 'admin' && currentPage !== 'dashboard') {
-      setCurrentPage(isAdmin ? 'admin' : 'dashboard');
+    if (user && currentPage !== 'dashboard') {
+      setCurrentPage('dashboard');
     }
-  }, [user, isAdmin, checkingRole, currentPage]);
+  }, [user, currentPage]);
 
   const handleGetStarted = () => {
     setCurrentPage('auth');
@@ -59,20 +27,15 @@ const Index = () => {
     setCurrentPage('auth');
   };
 
-  const handleGoToAdminAuth = () => {
-    setCurrentPage('admin-auth');
-  };
 
   const handleBackToLanding = () => {
     setCurrentPage('landing');
   };
 
-  const handleAuthSuccess = (email: string, needsVerification: boolean, isAdminLogin = false) => {
+  const handleAuthSuccess = (email: string, needsVerification: boolean) => {
     if (needsVerification) {
       setPendingEmail(email);
       setCurrentPage('otp');
-    } else if (isAdminLogin) {
-      setCurrentPage('admin');
     } else {
       setCurrentPage('dashboard');
     }
@@ -91,7 +54,7 @@ const Index = () => {
     setCurrentPage('landing');
   };
 
-  if (loading || checkingRole) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -105,30 +68,19 @@ const Index = () => {
   }
 
   if (currentPage === 'landing') {
-    return <Landing onGetStarted={handleGetStarted} onLogin={handleGoToAuth} onAdminLogin={handleGoToAdminAuth} />;
+    return <Landing onGetStarted={handleGetStarted} onLogin={handleGoToAuth} />;
   }
 
   if (currentPage === 'auth') {
     return <AuthPage onBack={handleBackToLanding} onAuthSuccess={handleAuthSuccess} />;
   }
 
-  if (currentPage === 'admin-auth') {
-    return <AuthPage 
-      onBack={handleBackToLanding} 
-      onAuthSuccess={(email, needsVerification) => handleAuthSuccess(email, needsVerification, true)}
-      isAdminLogin={true}
-    />;
-  }
 
   if (currentPage === 'otp') {
     return <OTPVerification email={pendingEmail} onBack={handleBackFromOTP} onVerified={handleOTPVerified} />;
   }
 
-  if (currentPage === 'admin') {
-    return <Admin onLogout={handleLogout} onBack={() => setCurrentPage('dashboard')} />;
-  }
-
-  return <Dashboard onLogout={handleLogout} user={user!} onNavigateAdmin={() => setCurrentPage('admin')} />;
+  return <Dashboard onLogout={handleLogout} user={user!} />;
 };
 
 export default Index;
