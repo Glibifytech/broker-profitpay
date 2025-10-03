@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -14,6 +14,12 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Log when AdminLogin component loads
+  useEffect(() => {
+    console.log("🔑 AdminLogin Component Loaded!");
+    console.log("📧 Default admin email: hzqi86x4ic@ozsaip.com");
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

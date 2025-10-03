@@ -8,6 +8,12 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Log when Admin component loads
+  useEffect(() => {
+    console.log("🔐 Admin Component Loaded!");
+    console.log("🌐 Current URL:", window.location.href);
+  }, []);
+
   // Check if admin is logged in
   useEffect(() => {
     const adminSession = localStorage.getItem('admin_session');
