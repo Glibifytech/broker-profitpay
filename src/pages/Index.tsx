@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Landing from '@/pages/Landing';
 import AuthPage from '@/components/AuthPage';
 import OTPVerification from '@/components/OTPVerification';
 import Dashboard from '@/pages/Dashboard';
 import Admin from '@/pages/Admin';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 type AppState = 'landing' | 'auth' | 'admin-auth' | 'otp' | 'dashboard' | 'admin';
 
@@ -12,11 +13,43 @@ const Index = () => {
   const { user, loading, signOut } = useAuth();
   const [currentPage, setCurrentPage] = useState<AppState>('landing');
   const [pendingEmail, setPendingEmail] = useState<string>('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingRole, setCheckingRole] = useState(false);
 
-  // If we have a user, show dashboard
-  if (user && currentPage !== 'dashboard') {
-    setCurrentPage('dashboard');
-  }
+  // Check if user has admin role
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      setCheckingRole(true);
+      try {
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .single();
+
+        setIsAdmin(!!data && !error);
+      } catch (error) {
+        setIsAdmin(false);
+      } finally {
+        setCheckingRole(false);
+      }
+    };
+
+    checkAdminRole();
+  }, [user]);
+
+  // If we have a user, show appropriate page
+  useEffect(() => {
+    if (user && !checkingRole && currentPage !== 'admin' && currentPage !== 'dashboard') {
+      setCurrentPage(isAdmin ? 'admin' : 'dashboard');
+    }
+  }, [user, isAdmin, checkingRole, currentPage]);
 
   const handleGetStarted = () => {
     setCurrentPage('auth');
@@ -58,7 +91,7 @@ const Index = () => {
     setCurrentPage('landing');
   };
 
-  if (loading) {
+  if (loading || checkingRole) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
